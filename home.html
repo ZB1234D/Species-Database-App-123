@@ -36,6 +36,97 @@
             box-sizing: border-box;
         }
 
+    .app-title {
+        text-align: center;
+        margin: 0 0 2.5rem 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .app-subtitle{
+        text-align: center;
+        margin: -1.5rem 0 2.5rem 0;
+        font-size: 1rem;
+        color: #475569;
+    }
+
+    /* Logo styling (small, centered) */
+    .app-logo {
+        width: 140px;
+        display: block;
+        margin: 0 auto 1.25rem auto;
+    }
+
+    .lang-toggle{
+        display: flex;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid #0f172a;
+        background: #f9fbfc;
+    }
+
+    /* Filter Carousel Styles */
+    .filter-carousel-container {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .filter-carousel {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        margin: 0 -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .filter-carousel::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    .filter-button {
+        flex: 0 0 auto;
+        padding: 0.625rem 1.25rem;
+        border-radius: 999px; /* Oval shape */
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        color: #475569;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .filter-button:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+    }
+
+    .filter-button.active {
+        background: #0f172a;
+        color: #ffffff;
+        border-color: #0f172a;
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+        transform: scale(1.05);
+    }
+
+    .filter-button:active {
+        transform: scale(0.98);
+    }
+
+    .filter-button.active:active {
+        transform: scale(1.02);
+    }
         /* Header styling */
         .app-header {
             width: 100%;
@@ -184,31 +275,12 @@
     </style>
 </head>
 <body>
-    <main class="app-shell">
-        <!-- Header with title and EN button -->
-        <header class="app-header">
-            <h1 class="header-title">Species Database</h1>
-            <button class="lang-btn">EN</button>
-        </header>
+    <main class = "app-shell">
+      
+        <div class="container" id="species-list"></div>
 
-        <!-- Species container with sample items -->
-        <div class="container" id="species-list">
-            <div class="species-item">
-                <img src="Assets/Images/Camouflage18/species1.png" alt="Albizia-lebbeck" />
-                <div class="species-text">
-                    <p class="species-name">Albizia-lebbeck</p>
-                    <p class="species-subname">Ai-Samatuku</p>
-                </div>
-            </div>
-            <div class="species-item">
-                <img src="Assets/Images/Camouflage18/species2.png" alt="Azadirachta-indica" />
-                <div class="species-text">
-                    <p class="species-name">Azadirachta-indica</p>
-                    <p class="species-subname">Sumaer Malae</p>
-                </div>
-            </div>
-        </div>
         <script src="scripts/specieslist.js"></script>
+        <script src="scripts/filterCarousel.js"></script>
 
         <!-- Logo and main content -->
         <img src="Assets/Images/Camouflage18/logo-placeholder.png" alt="Species Database App Logo" class="app-logo" />
