@@ -59,6 +59,6 @@ venv\Scripts\activate        # on Windows
 pip install -r requirements.txt
 
 #Run
-python cli.py new_species_data.xlsx species_schema.json --audit
+python python cli.py data\new_species_data.xlsx species_schema.json --audit
 
 
