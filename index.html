@@ -179,7 +179,13 @@
                     console.error('Could not save language preference:', e);
                 }
 
-                window.location.href = 'home.html';
+                if(chosenLang === 'en') {
+                    window.location.href = 'home.html';
+                } else if (chosenLang === 'tet') {
+                     window.location.href = 'tetum.html';
+                }
+
+               
             });
         });
 
