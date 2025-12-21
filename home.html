@@ -32,7 +32,7 @@
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
-            padding: 0; /* HEADER already has padding */
+            padding: 0;
             box-sizing: border-box;
         }
 
@@ -48,7 +48,6 @@
             box-sizing: border-box;
         }
 
-        /* HEADER TOP (title + EN button) */
         .header-top {
             display: flex;
             align-items: center;
@@ -75,7 +74,6 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* SEARCH BAR (missing earlier — now added!) */
         .search-bar {
             background: #FFFFFF;
             border-radius: 999px;
@@ -98,8 +96,6 @@
             font-size: 1rem;
         }
 
-        /* --- Your existing CSS remains unchanged below --- */
-
         .app-title {
             text-align: center;
             margin: 0 0 2.5rem 0;
@@ -121,15 +117,8 @@
             margin: 0 auto 1.25rem auto;
         }
 
-        .lang-toggle{
-            display: flex;
-            border-radius: 999px;
-            overflow: hidden;
-            border: 1px solid #0f172a;
-            background: #f9fbfc;
-        }
-
         .filter-carousel-container {
+            padding: 0 1.5rem;
             margin-bottom: 1.5rem;
             position: relative;
         }
@@ -143,9 +132,11 @@
             scrollbar-width: none;
             gap: 0.75rem;
             padding: 0.5rem 0;
-            margin: 0 -1.5rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            cursor: grab;
+        }
+
+        .filter-carousel:active {
+            cursor: grabbing;
         }
 
         .filter-carousel::-webkit-scrollbar {
@@ -180,6 +171,7 @@
             transform: scale(1.05);
         }
 
+        /* Species list */
         .container#species-list {
             display: flex;
             flex-direction: column;
@@ -221,32 +213,6 @@
             margin: 0;
         }
 
-        .app-logo {
-            width: 140px;
-            display: block;
-            margin: 3rem auto 1.5rem auto;
-        }
-
-        .app-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 0 0 1rem 0;
-        }
-
-        .lang-label {
-            font-size: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        p {
-            font-size: 1rem;
-            line-height: 1.5;
-            text-align: center;
-            margin: 0 1rem 2rem 1rem;
-        }
-
         .back-link {
             display: block;
             text-align: center;
@@ -260,6 +226,126 @@
             font-size: 0.8rem;
             text-align: center;
         }
+
+        /* -------------------------
+           LANGUAGE OVERLAY
+        -------------------------*/
+        .lang-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .lang-modal {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 80%;
+            max-width: 320px;
+            text-align: center;
+            position: relative;
+        }
+
+        .lang-choice {
+            padding: 1rem 2rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: #0B5C37;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .close-overlay {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* -------------------------
+           FILTER OVERLAY (NEW)
+        -------------------------*/
+        .filter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+
+        .filter-modal {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 80%;
+            max-width: 320px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-filter-overlay {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: #ff4d4d;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .placeholder-option {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 0.6rem;
+            font-size: 1.1rem;
+            background: #0B5C37;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .species-list-card:hover {
+            background-color: #8AC642;
+            color: #0B5C37;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .common-name-species {
+            color:grey;
+            margin: 0;
+        }
+
+        .species-list-card:hover .common-name-species {
+            color:white;
+        }
+
     </style>
 </head>
 <body>
@@ -274,49 +360,214 @@
         
         <div class="search-bar">
             <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Search species">
+            <input type="text" placeholder="Search species" id="searchInput">
         </div>
     </header>
 
+    <!-- Filter Carousel -->
+    <div class="filter-carousel-container">
+        <div class="filter-carousel" id="filter-carousel">
+            <button class="filter-button" data-filter="all">All</button>
+            <button class="filter-button" data-filter="a-z">A-Z</button>
+            <button class="filter-button" data-filter="leaf-type">Leaf Type</button>
+            <button class="filter-button" data-filter="fruit-type">Fruit Type</button>
+        </div>
+    </div>
+
     <div class="container" id="species-list"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <script src="scripts/specieslist.js"></script>
     <script src="scripts/filterCarousel.js"></script>
 
-    <img src="Assets/Images/Camouflage18/logo-placeholder.png" alt="Species Database App Logo" class="app-logo" />
-
-    <h1 class="app-title">Species Database App</h1>
-    <p class="lang-label" id="langLabel">Placeholder result of loading language</p>
-
-    <p>This is the home page that will contain our main content. For now it is just a placeholder.</p>
-
-    <a class="back-link" href="index.html">Change Language</a>
+    <a class="back-link" href="index.html"></a>
 
     <div class="debug" id="debugInfo"></div>
+
+    <!-- LANGUAGE OVERLAY -->
+    <div class="lang-overlay" id="langOverlay">
+        <div class="lang-modal">
+            <button class="close-overlay" id="closeOverlay">✖</button>
+            <button class="lang-choice" id="chooseEn">English</button>
+            <button class="lang-choice" id="chooseTet">Tetum</button>
+        </div>
+    </div>
+
+    <!-- FILTER OVERLAY (NEW) -->
+    <div class="filter-overlay" id="filterOverlay">
+        <div class="filter-modal">
+            <button class="close-filter-overlay" id="closeFilterOverlay">✖</button>
+            <h2 id="filterTitle"></h2>
+            <p id="filterDescription"></p>
+            <div id="filterOptions"></div>
+        </div>
+    </div>
 
 </main>
 
 <script>
-    let lang = "en";
+// LANGUAGE HANDLER
+let lang = "en";
 
-    try {
-        const stored = localStorage.getItem("appLanguage");
-        if (stored === "en" || stored === "tet") {
-            lang = stored;
-        }
-    } catch (e) {
-        console.warn("Could not access localStorage:", e);
+try {
+    const stored = localStorage.getItem("appLanguage");
+    if (stored === "en" || stored === "tet") {
+        lang = stored;
+    }
+} catch (e) {
+    console.warn("Could not access localStorage:", e);
+}
+
+const langBtn = document.querySelector(".lang-btn");
+langBtn.textContent = lang === "en" ? "EN" : "TET";
+
+const overlay = document.getElementById("langOverlay");
+const closeBtn = document.getElementById("closeOverlay");
+const chooseEn = document.getElementById("chooseEn");
+const chooseTet = document.getElementById("chooseTet");
+
+langBtn.addEventListener("click", () => {
+    overlay.style.display = "flex";
+});
+
+closeBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+});
+
+chooseEn.addEventListener("click", () => {
+    localStorage.setItem("appLanguage", "en");
+    langBtn.textContent = "EN";
+    overlay.style.display = "none";
+});
+
+chooseTet.addEventListener("click", () => {
+    localStorage.setItem("appLanguage", "tet");
+    langBtn.textContent = "TET";
+    overlay.style.display = "none";
+});
+
+
+// ------------------------------
+// FILTER OVERLAY JS (NEW)
+// ------------------------------
+const filterOverlay = document.getElementById("filterOverlay");
+const closeFilterOverlay = document.getElementById("closeFilterOverlay");
+const filterTitle = document.getElementById("filterTitle");
+const filterOptions = document.getElementById("filterOptions");
+const filterDescription = document.getElementById("filterDescription");
+
+const filterConfigs = {
+    "a-z": {
+        title: "Sort Alphabetically",
+        description: "Sort species in ascending or descending order.",
+        options: [
+            { label: "A → Z", action: () => sortSpecies("az") },
+            { label: "Z → A", action: () => sortSpecies("za") }
+        ]
+    },
+    "leaf-type": {
+        title: "Leaf Type",
+        description: "Filter species by their leaf types.",
+        options: [
+            { label: "Option A", action: () => console.log("Leaf A") },
+            { label: "Option B", action: () => console.log("Leaf B") }
+        ]
+    },
+    "fruit-type": {
+        title: "Fruit Type",
+        description: "Filter species by their fruit types.",
+        options: [
+            { label: "Option A", action: () => console.log("Fruit A") },
+            { label: "Option B", action: () => console.log("Fruit B") }
+        ]
+    }
+}
+
+
+document.querySelectorAll(".filter-button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const key = btn.dataset.filter;
+        
+
+        document.querySelectorAll(".filter-button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        if (key === "all") {
+            renderSpecies(loadedSpeciesData);
+            filterOverlay.style.display = "none";
+            return;
+        }   
+        const config = filterConfigs[key];
+
+        if(!config) return;
+
+        filterTitle.textContent = config.title;
+        filterDescription.textContent = config.description;
+        filterOptions.innerHTML = "";
+
+        config.options.forEach(option => {
+            const optionBtn = document.createElement("button");
+            optionBtn.className = "placeholder-option";
+            optionBtn.textContent = option.label;
+
+            optionBtn.onclick = () => {
+                if (option.action) {
+                    option.action();
+                }
+                filterOverlay.style.display = "none";
+            };
+
+            filterOptions.appendChild(optionBtn);
+});
+
+        filterOverlay.style.display = "flex";
+    });
+});
+
+/*document.querySelectorAll(".filter-button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const label = btn.textContent.trim();
+        filterTitle.textContent = label + " Options";
+        filterOverlay.style.display = "flex";
+    });
+}); */
+
+closeFilterOverlay.addEventListener("click", () => {
+    filterOverlay.style.display = "none";
+});
+
+let originalOrder = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+    originalOrder = Array.from(document.querySelectorAll(".species-item"));
+});
+
+function resetSpeciesList() {
+    const list = document.getElementById("species-list");
+    if (!originalOrder) return;
+    originalOrder.forEach(item => list.appendChild(item));
+}
+
+function sortSpecies(direction) {
+    if (!loadedSpeciesData || loadedSpeciesData.length === 0) {
+        console.warn("No species data to sort.");
+        return;
     }
 
-    const langLabel = document.getElementById("langLabel");
-    const debugInfo = document.getElementById("debugInfo");
+    const sorted = [...loadedSpeciesData].sort((a, b) => {
+        const nameA = a.scientific_name.toLowerCase();
+        const nameB = b.scientific_name.toLowerCase();
 
-    langLabel.textContent =
-        lang === "en" ? "Current Language: English" :
-        lang === "tet" ? "Current Language: Tetum" :
-        "Current Language: Unknown";
+        return direction === "az"
+            ? nameA.localeCompare(nameB)
+            : nameB.localeCompare(nameA);
+    });
 
-    debugInfo.textContent = `Debug Info: App Language = "${lang}"`;
+    renderSpecies(sorted);
+}
+
+
 </script>
 
 </body>
