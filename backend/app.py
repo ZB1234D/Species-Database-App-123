@@ -120,43 +120,123 @@ def get_bundle():
 #       
 @app.get("/api/species/changes")
 def get_species_changes():
+    """
+    Thsi endpoint tells client if its local data is out of date
+
+    client uses endpoint todecide whether to do nothing, incremental sync, or re-download full bundle
+    """
     #app send last version it synced with
     since_version = request.args.get("since_version", type=int)
     if since_version is None:
         return jsonify({"error": "since_version required"}), 400
-    
-    #getting pagination params... page starts at 1
-    page = request.args.get("page", type=int, default=1)
-    per_page = request.args.get("per_page", type=int, default=50)
 
-    #puttin gin some limits
-    if page < 1: page = 1
-    if per_page < 1: per_page =1
-    if per_page > 200: per_page = 200
-
-    #supabase uses zero based range
-    start = (page -1) *per_page
-    end = start + per_page -1
 
     #get all changelog entries with a version higher than whatclient has
     result = (
         supabase.table("changelog")
-        .select("*", count="exact")
+        .select("version", count="exact")
         .gt("version", since_version)
-        .order("change_id") #keeping results in stable order
-        .range(start, end) #applying pagination
         .execute()
     )
 
     if result.data is None:
         return jsonify({"error": "failed toread changelog"}), 500
 
-    #pagination response
-    return jsonify( {
-        "total": result.count, #totla matchiong rows
-        "page": page,
-        "per_page": per_page,
-        "data": result.data #just this pages rows
+    change_count = result.count or 0
+
+    #if nothing changes, client must be up to date
+    if change_count == 0:
+        return jsonify({
+            "up_to_date": True,
+            "latest_version": since_version,
+            "change_count":0
+        })
+    
+    #finding latest version # on server
+    latest_version = max(row["version"] for row in result.data)
+
+    #threshold: if too many changes, no point having incremental syncing
+    #will just pull the bundle
+    THRESHOLD = 20
+
+    if change_count > THRESHOLD:
+        return jsonify({
+            "up_to_date": False,
+            "force_bundle": True,
+            "latest_version": latest_version,
+            "change_count": change_count
+        })
+    return jsonify({
+        "up_to_date": False,
+        "force_bundle": False,
+        "latest_version": latest_version,
+        "change_count": change_count
+    })
+
+@app.get("/api/species/incremental")
+def get_species_incremental():
+    """
+    incremental sync endpoint
+
+    returns LATEST FULL ROWS fro species that changed since
+    client last sync version
+
+    to keep safe for offline we have:
+    - rows fully replaced
+    - no partial updates
+    - no history replay
+    """
+    since_version = request.args.get("since_version", type=int)
+    if since_version is None:
+        return jsonify({"error": "sicne_version required"}), 400
+    
+    #find ewhich species ids changed
+    changes = (
+        supabase.table("changelog")
+        .select("species_id, version")
+        .gt("version", since_version)
+        .execute()
+    )
+
+    if not changes.data:
+        return jsonify({
+            "species_en": [],
+            "species_tet": [],
+            "latest_version": since_version
+        })
+    #deduplicating
+    species_ids = list({row["species_id"] for row in changes.data})
+    
+    latest_version =max(row["version"] for row in changes.data)
+
+    if not species_ids:
+        return jsonify({
+            "species_en": [],
+            "species_tet": [],
+            "latest_version": latest_version
+        })
+    #fetch latest en species rows
+    species_en = (
+        supabase.table("species_en")
+        .select("*")
+        .in_("species_id", species_ids)
+        .execute()
+    )
+
+    #fetch latest tet species rows
+    species_tet = (
+        supabase.table("species_tet")
+        .select("*")
+        .in_("species_id", species_ids)
+        .execute()
+    )
+
+    if species_en.data is None or species_tet.data is None:
+        return jsonify({"error": "failed to fetch incremental species"}), 500
+    return jsonify({
+        "latest_version": latest_version,
+        "species_en": species_en.data,
+        "species_tet": species_tet.data
     })
 """
 This endpoint accepts an Excel or CSV file upload 
