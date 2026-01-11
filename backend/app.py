@@ -6,6 +6,9 @@ from datetime import datetime
 import os
 from supabase import create_client, Client
 
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
@@ -289,6 +292,15 @@ def upload_species_file():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+"""
+IMPORTANT AUTH NOTES!!
+
+name field used as canonical login identifier
+
+- Normal users: name is username (uses password-based login)
+- Admin users: name = email address (Google OAuth login)
+"""
 
 @app.post("/api/auth/login")
 def login():
@@ -325,6 +337,12 @@ def login():
     #admin can disable users... applies when device is online
     if not user["is_active"]:
         return jsonify({"error": "account disabled"}), 403
+
+    #if admin tries to log in, guide to correct flwo
+    if user["role"] == "admin":
+        return jsonify({
+            "error": "this accoutn is an admin account. login using admin login"
+        }), 403
 
     #comparing inputted password with stored hash
     if not bcrypt.checkpw(
@@ -379,9 +397,40 @@ def user_state():
         #"changed": changed
     }), 200
 
-@app.get("api/auth/google-admin")
+@app.post("/api/auth/google-admin")
 def google_admin_login():
-    pass
+    """
+    google login endpoitn for admin dashboard
+
+    - google used to verify identity
+    - roles and permissions in users table
+    """
+
+    # googlee id token from frontend side
+    data = request.json
+    if not data or "id_token" not in data:
+        return jsonify({"error": "google id_token missing"}), 400
+    
+    #verifying token with google
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            data["id_token"],
+            google_requests.Request(),
+            os.getenv("GOOGLE_CLIENT_ID")
+        )
+    except Exception as e:
+        return jsonify({"error": "invalid google token"}), 401
+    
+    #pulling basic info from google response
+    email = idinfo.get("email")
+
+    resp = (
+        supabase.table("users")
+        .select("user_id, role, is_active")
+        .eq("email", email)
+    )
+
+    
 
 
 if __name__ == '__main__':
