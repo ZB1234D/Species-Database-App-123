@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify
 
+from werkzeug.utils import secure_filename
+from datetime import datetime
+
 import os
 from supabase import create_client, Client
 
@@ -61,6 +64,11 @@ def require_role(allowed_roles: list[str]):
 app = Flask(__name__)
 
 CORS(app)
+
+#register media routes
+from media import register_media_routes
+register_media_routes(app, supabase, require_role)
+
 
 @app.route('/')
 def index():
@@ -370,6 +378,10 @@ def user_state():
         #client can decide if updating local state necessary
         #"changed": changed
     }), 200
+
+@app.get("api/auth/google-admin")
+def google_admin_login():
+    pass
 
 
 if __name__ == '__main__':
