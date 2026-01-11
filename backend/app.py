@@ -161,7 +161,7 @@ def upload():
         
         # Insert into Tetum database
         print("Starting Tetum Upload")
-        data2 = supabase_tetum.table('species_en').insert({
+        data2 = supabase_tetum.table('species_tet').insert({
             'scientific_name': scientific_name_tetum,
             'common_name': common_name_tetum,
             'etymology': etymology_tetum,
@@ -178,6 +178,8 @@ def upload():
             raise Exception('DB2 failed: No data returned')
         
         print("Upload to Tetum database successful")
+        
+        
         
         return jsonify("Created"), 200
 
@@ -197,14 +199,6 @@ def upload():
         
 
 
-
-
-
-
-
-
-
-    
 async def translateMultipleTexts(texts):
     tasks = [translate_to_tetum(text) for text in texts]
     
