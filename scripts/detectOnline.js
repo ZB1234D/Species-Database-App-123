@@ -15,6 +15,15 @@ function createOnlineBanner() {
     textSpan.textContent = 'You\'re back online!';
     banner.appendChild(textSpan);
 
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-banner';
+    closeBtn.textContent = '✖';
+    closeBtn.addEventListener('click', () => {
+      banner.classList.add('hidden');      // hide banner
+      if (flagTimer) clearTimeout(flagTimer); // stop timer
+    });
+
+    banner.appendChild(closeBtn);
     main.appendChild(banner);
   }
 
