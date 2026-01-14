@@ -44,6 +44,7 @@ self.addEventListener('fetch', (event) => {
                 if (cached) return cached;
 
                 return fetch(event.request).then(response => {
+
                     if (event.request.destination === "image") {
                     return caches.open(CACHE_NAME).then(cache => {
                         cache.put(event.request, response.clone());
