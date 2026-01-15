@@ -5,7 +5,7 @@ import tempfile
 import asyncio
 from uploader import process_file, translate_to_tetum
 import bcrypt
-from supabase import create_client, Clientimport os
+from supabase import create_client, Client
 from flask_cors import CORS
 import os
 from pathlib import Path
