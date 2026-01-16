@@ -34,8 +34,12 @@ export function AddExcel() {
     setError("");
 
     try {
+      //token needed for upload endpoint
+      const token = localStorage.getItem("admin_token")
+  
       const response = await fetch("http://127.0.0.1:5000/upload-species", {
         method: "POST",
+        headers: {Authorization: token || "",},
         body: formData,
       });
 
@@ -47,9 +51,9 @@ export function AddExcel() {
 
       setMessage(`✅ Upload successful! ${result.rows_inserted ?? ""}`);
       setFile(null);
-    } catch (err) {
+    } catch (err: any) {
       setError(
-        "❌ Upload failed. Please check the file format. Error: " + { err }
+        err?.message || "Upload failed"
       );
     } finally {
       setLoading(false);

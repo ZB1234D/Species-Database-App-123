@@ -8,19 +8,62 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import UsersPage from "./Pages/Users";
 import Analytics from "./Pages/Analytics";
 import Audit from "./Pages/Audit";
+import AdminLoginForm from "./Pages/AdminLoginForm";
+import AdminLayout from "./Components/AdminLayout";
 
 function App() {
   return (
     <Router>
-      <TheDrawer />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Page1" element={<Page1 />} />
-        <Route path="/AddExcel" element={<AddExcel />} />
-        <Route path="/EditEntry" element={<EditEntry />} />
-        <Route path="/Users" element={<UsersPage />} />
-        <Route path="/Analytics" element={<Analytics />} />
-        <Route path="/Audit" element={<Audit />} />
+        {/*PUBLIC ROUTE */}
+        <Route path="/admin-login" element={<AdminLoginForm />} />
+
+        {/*ADMIN */}
+        <Route path="/" element={<AdminLayout>
+          <Home />
+        </AdminLayout>} />
+
+        <Route 
+          path="/Page1" 
+          element={
+            <AdminLayout>
+              <Page1 />
+            </AdminLayout>} />
+            
+        <Route path="/AddExcel" element={
+          <AdminLayout>
+            <AddExcel />
+          </AdminLayout> } />
+
+        <Route 
+          path="/EditEntry" 
+          element={
+          <AdminLayout>
+            <EditEntry />
+          </AdminLayout>
+          } />
+
+        <Route 
+          path="/Users" 
+          element={
+          <AdminLayout>
+            <UsersPage />
+          </AdminLayout>
+          } />
+        
+        <Route 
+        path="/Analytics" 
+        element={
+        <AdminLayout>
+          <Analytics />
+        </AdminLayout>} />
+
+        <Route 
+        path="/Audit" 
+        element={
+        <AdminLayout>
+          <Audit />
+        </AdminLayout>} />
       </Routes>
     </Router>
   );
