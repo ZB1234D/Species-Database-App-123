@@ -214,7 +214,7 @@ def register_auth_routes(app, supabase):
     @app.post("/api/auth/admin-login")
     def admin_login():
         """
-        admin login using email and password
+        admin login using email and password for google
         short lived access token
         """
 
@@ -222,16 +222,16 @@ def register_auth_routes(app, supabase):
         if not data:
             return jsonify({"error": "missing request body"}), 400
         
-        email = data.get("email")
+        name = data.get("name")
         password = data.get("password")
 
-        if not email or not password:
+        if not name or not password:
             return jsonify({"error": "missing fields"}), 400
         
         resp = (
             supabase.table("users")
             .select("user_id, password_hash, role, is_active")
-            .eq("name", email)
+            .eq("name", name)
             .execute()
         )
 
