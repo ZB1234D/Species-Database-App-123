@@ -136,26 +136,15 @@ export function EditEntry() {
         setError('')
 
         try {
-            const { error } = await supabase!
-                .from('species_en')
-                .delete()
-                .eq('species_id', ID)
-
-            if (error) {
-                console.error('========== SUPABASE ERROR DETAILS ==========')
-                console.error('Error object:', error)
-                console.error('Error code:', error.code)
-                console.error('Error details:', error.details)
-                console.error('Error hint:', error.hint)
-                console.error('Full error JSON:', JSON.stringify(error, null, 2))
-                console.error('===========================================')
-                
-                let errorMsg = `Error Code: ${error.code}\n`
-                errorMsg += `Message: ${error.message}\n`
-                if (error.details) errorMsg += `Details: ${error.details}\n`
-                if (error.hint) errorMsg += `Hint: ${error.hint}`
-                
-                throw new Error(errorMsg)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/species/${ID}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            })
+            
+            if(!res.ok)
+            {
+                const err = await res.json().catch(() => ({}))
+                throw new Error(err.error || 'failed to delete species')
             }
 
             setResetKey(prev => prev + 1)
@@ -221,44 +210,29 @@ export function EditEntry() {
         setError('')
 
         try {
-            const { error } = await supabase!
-                .from('species_en')
-                .update([
-                    { 
-                        scientific_name: formData.scientificName,
-                        common_name: formData.commonName ,
-                        etymology: formData.etymology,
-                        habitat: formData.habitat,
-                        identification_character: formData.identificationCharacteristics,
-                        leaf_type: formData.leafType,
-                        fruit_type: formData.fruitType,
-                        phenology: formData.phenology,
-                        seed_germination: formData.seedGermination,
-                        pest: formData.pests 
-                    }
-                ])
-                .eq('species_id', ID)
-                .select()
+            await fetch(`${import.meta.env.VITE_API_URL}/api/species/${ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    scientific_name: formData.scientificName,
+                    common_name: formData.commonName ,
+                    etymology: formData.etymology,
+                    habitat: formData.habitat,
+                    identification_character: formData.identificationCharacteristics,
+                    leaf_type: formData.leafType,
+                    fruit_type: formData.fruitType,
+                    phenology: formData.phenology,
+                    seed_germination: formData.seedGermination,
+                    pest: formData.pests 
+                })
 
-            if (error) {
-                console.error('========== SUPABASE ERROR DETAILS ==========')
-                console.error('Error object:', error)
-                console.error('Error code:', error.code)
-                console.error('Error details:', error.details)
-                console.error('Error hint:', error.hint)
-                console.error('Full error JSON:', JSON.stringify(error, null, 2))
-                console.error('===========================================')
-                
-                let errorMsg = `Error Code: ${error.code}\n`
-                errorMsg += `Message: ${error.message}\n`
-                if (error.details) errorMsg += `Details: ${error.details}\n`
-                if (error.hint) errorMsg += `Hint: ${error.hint}`
-                
-                throw new Error(errorMsg)
-            }
+            })
 
             setResetKey(prev => prev + 1)
-            setStatus('Species added successfully!')
+            setStatus('Species updated successfully!')
             setError('')
             setRowSelected(false)
             setID(-1)
@@ -289,9 +263,6 @@ export function EditEntry() {
         }
     }
 
-
-
-    
 
     const handleRowSelect = (rowData: Species | null) => {
         setStatus('')
