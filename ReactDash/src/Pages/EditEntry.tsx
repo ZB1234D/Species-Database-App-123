@@ -71,23 +71,7 @@ const errorContainerSx = {
     marginBottom: 2
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function EditEntry() {
-    if (!supabase || !supabaseTetum) {
-        return <div>ERROR! Database connection failed!</div>
-    }
 
     const [error, setError] = useState('')
     
@@ -113,7 +97,7 @@ export function EditEntry() {
         phenology: '',
         seedGermination: '',
         pests: ''
-    }) 
+    })
 
     const [open, setOpen] = useState(false)
 
@@ -134,11 +118,20 @@ export function EditEntry() {
         setLoading(true)
         setStatus('')
         setError('')
+    
+        const token = localStorage.getItem("admin_token")
+        if(!token)
+        {
+            throw new Error("Admin token missing")
+        }
 
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/species/${ID}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                }
             })
             
             if(!res.ok)
@@ -147,6 +140,7 @@ export function EditEntry() {
                 throw new Error(err.error || 'failed to delete species')
             }
 
+            //*
             setResetKey(prev => prev + 1)
             setStatus('Species deleted successfully!')
             setError('')
@@ -210,12 +204,18 @@ export function EditEntry() {
         setError('')
 
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/species/${ID}`, {
+            const token = localStorage.getItem("admin_token")
+            if(!token)
+            {
+                throw new Error("admin token missing")
+            }
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/species/${ID}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: token,
                 },
-                credentials: 'include',
                 body: JSON.stringify({
                     scientific_name: formData.scientificName,
                     common_name: formData.commonName ,
@@ -231,24 +231,33 @@ export function EditEntry() {
 
             })
 
+            if(!res.ok)
+            {
+                const err = await res.json().catch(() => ({}))
+                throw new Error(err.error || 'Update failed')
+            }
+            const data = await res.json()
+            console.log('update response:', data)
+
+            //species updated successfullty in db
             setResetKey(prev => prev + 1)
             setStatus('Species updated successfully!')
-            setError('')
             setRowSelected(false)
-            setID(-1)
+            // setRowSelected(false)
+            // setID(-1)
 
-            setFormData({
-                scientificName: '',
-                commonName: '',
-                leafType: '',
-                fruitType: '',
-                etymology: '',
-                habitat: '',
-                identificationCharacteristics: '',
-                phenology: '',
-                seedGermination: '',
-                pests: ''
-            })
+            // setFormData({
+            //     scientificName: '',
+            //     commonName: '',
+            //     leafType: '',
+            //     fruitType: '',
+            //     etymology: '',
+            //     habitat: '',
+            //     identificationCharacteristics: '',
+            //     phenology: '',
+            //     seedGermination: '',
+            //     pests: ''
+            // })
 
 
         }
@@ -267,6 +276,7 @@ export function EditEntry() {
     const handleRowSelect = (rowData: Species | null) => {
         setStatus('')
         console.log(rowData)
+        setError('')
         if (rowData) {
             setID(rowData.species_id)
             setFormData({
