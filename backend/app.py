@@ -19,12 +19,12 @@ from auth_authz import register_auth_routes, require_role, get_admin_user
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-load_dotenv(".env.local")
+load_dotenv()
 
 
 
-SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("VITE_SUPABASE_PUBLISHABLE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 print("Supabase URL:", SUPABASE_URL)
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
