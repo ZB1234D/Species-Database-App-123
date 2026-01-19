@@ -1,13 +1,13 @@
-// Frontend/scripts/sw-register.js
+// scripts/sw-register.js - Register Service Worker
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/service-worker.js")
+      .register("./service-worker.js")
       .then((reg) => {
-        console.log("Service worker registered with scope:", reg.scope);
+        console.log("[SW] Registered:", reg.scope);
       })
       .catch((err) => {
-        console.error("Service worker registration failed:", err);
+        console.warn("[SW] Registration failed:", err);
       });
   });
 }

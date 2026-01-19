@@ -1,10 +1,10 @@
-// Frontend/scripts/config.js
+// scripts/config.js - API Configuration
 export const API_CONFIG = {
-  // Change this when deploying. For local dev, backend is usually on 5000.
   baseUrl: "http://127.0.0.1:5000",
-
   endpoints: {
     bundle: "/api/bundle",
     login: "/api/login",
   },
 };
+
+console.log("[config.js] API Config loaded:", API_CONFIG.baseUrl);

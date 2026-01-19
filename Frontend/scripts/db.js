@@ -1,4 +1,4 @@
-// Frontend/scripts/db.js
+// scripts/db.js - IndexedDB for offline storage
 const DB_NAME = "sba_offline_db";
 const DB_VERSION = 1;
 
@@ -9,22 +9,18 @@ function openDb() {
     req.onupgradeneeded = () => {
       const db = req.result;
 
-      // species (English)
       if (!db.objectStoreNames.contains("species_en")) {
         db.createObjectStore("species_en", { keyPath: "species_id" });
       }
 
-      // species (Tetum)
       if (!db.objectStoreNames.contains("species_tet")) {
         db.createObjectStore("species_tet", { keyPath: "species_id" });
       }
 
-      // media blobs + metadata
       if (!db.objectStoreNames.contains("media")) {
         db.createObjectStore("media", { keyPath: "media_id" });
       }
 
-      // misc metadata (lastSync, bundleVersion, etc.)
       if (!db.objectStoreNames.contains("metadata")) {
         db.createObjectStore("metadata", { keyPath: "key" });
       }
@@ -35,21 +31,15 @@ function openDb() {
   });
 }
 
-async function withStore(storeName, mode, fn) {
+export async function dbPut(storeName, value) {
   const db = await openDb();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(storeName, mode);
+    const tx = db.transaction(storeName, "readwrite");
     const store = tx.objectStore(storeName);
-    const result = fn(store);
-
-    tx.oncomplete = () => resolve(result);
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
+    const req = store.put(value);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
   });
-}
-
-export async function dbPut(storeName, value) {
-  return withStore(storeName, "readwrite", (store) => store.put(value));
 }
 
 export async function dbGet(storeName, key) {
@@ -82,3 +72,16 @@ export async function metaGet(key) {
   const row = await dbGet("metadata", key);
   return row ? row.value : null;
 }
+
+export async function clearStore(storeName) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, "readwrite");
+    const store = tx.objectStore(storeName);
+    const req = store.clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+console.log("[db.js] IndexedDB module loaded");
