@@ -98,6 +98,8 @@ export function EditEntry() {
     //Disables the translate button
     const [translateLoading, setTranslateLoading] = useState(false)
 
+    const [speciesTet, setSpeciesTet] = useState<Species[]>([])
+
     const [formData, setFormData] = useState({
         scientificName: '',
         commonName: '',
@@ -127,6 +129,28 @@ export function EditEntry() {
     const [tetumRowError, setTetumRowError] = useState(false)
 
     const [open, setOpen] = useState(false)
+
+    useEffect(() => {
+        fetchTet()
+    }, [])
+
+
+    async function fetchTet() {
+        try{
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bundle`)
+            if(!res.ok) throw new Error("Failed to fetch bundle")
+            
+            const data = await res.json()
+
+            console.log("Loaded tetum rows:", data.species_tet)
+            setSpeciesTet(data.species_tet ?? [])
+        }
+        catch (err)
+        {
+            console.error("tetum failed to load from bundle", err)
+            setSpeciesTet([])
+        }
+    }
 
     const handleClickOpen = () => {
         setOpen(true)
@@ -379,6 +403,12 @@ export function EditEntry() {
         setError('')
         setTranslated(false)
         let rowID = 0
+
+        if (speciesTet.length === 0) {
+            console.warn("tet data not loaded yet");
+            return;
+        }
+
         
         //First we attempt to get english row, if successful attempt to fetch tetum row. 
         if (rowData) {
@@ -430,21 +460,44 @@ export function EditEntry() {
 
         //Fetch tetum row
         try {
-            const tetumRow = await getTetumRow(rowID)
-            setFormDataTetum({
-                scientificNameTetum: tetumRow.scientific_name || '',
-                commonNameTetum: tetumRow.common_name || '',
-                leafTypeTetum: tetumRow.leaf_type || '',
-                fruitTypeTetum: tetumRow.fruit_type || '',
-                etymologyTetum: tetumRow.etymology || '',
-                habitatTetum: tetumRow.habitat || '',
-                identificationCharacteristicsTetum: tetumRow.identification_character || '',
-                phenologyTetum: tetumRow.phenology || '',
-                seedGerminationTetum: tetumRow.seed_germination || '',
-                pestsTetum: tetumRow.pest || ''
-            })
-            setTetumRowError(false)
+            const tetumRow = speciesTet.find(
+                r => r.species_id === rowID
+            )
+            if(!tetumRow)
+            {
+                setTetumRowError(true)
+                setError("No tetum entry exists")
 
+                setFormDataTetum({
+                    scientificNameTetum: '',
+                    commonNameTetum: '',
+                    leafTypeTetum: '',
+                    fruitTypeTetum: '',
+                    etymologyTetum: '',
+                    habitatTetum: '',
+                    identificationCharacteristicsTetum: '',
+                    phenologyTetum: '',
+                    seedGerminationTetum: '',
+                    pestsTetum: ''
+                })
+                return
+            }
+            else {
+                setFormDataTetum({
+                    scientificNameTetum: tetumRow.scientific_name || '',
+                    commonNameTetum: tetumRow.common_name || '',
+                    leafTypeTetum: tetumRow.leaf_type || '',
+                    fruitTypeTetum: tetumRow.fruit_type || '',
+                    etymologyTetum: tetumRow.etymology || '',
+                    habitatTetum: tetumRow.habitat || '',
+                    identificationCharacteristicsTetum: tetumRow.identification_character || '',
+                    phenologyTetum: tetumRow.phenology || '',
+                    seedGerminationTetum: tetumRow.seed_germination || '',
+                    pestsTetum: tetumRow.pest || ''
+                })
+            }
+            setTetumRowError(false)
+            setError('')
         }
         catch {
             setFormDataTetum({
@@ -463,22 +516,6 @@ export function EditEntry() {
             setError("Error loading Tetum row. Does a tetum entry exist for this species??")
         }
 
-    }
-
-    const getTetumRow = async (species_id: number | null) => {
-        console.log("Trying to get tetum row ", species_id)
-        let data
-        if (!supabase) { throw new Error('Failed to get rows to display'); }
-        try {
-            const response = await supabase.from("species_tet").select().eq('species_id', species_id).single()
-            data = response.data
-        }
-        catch (error){
-            console.log("Error fetching tetum row: ", error)
-        }
-        
-        console.log(data)
-        return data
     }
 
     return (
@@ -646,7 +683,7 @@ export function EditEntry() {
 
             )}
 
-            {rowSelected && !tetumRowError && (
+            {rowSelected && (
                 <Box mt={4}>
                     {translated && (
                         <h2 style={{ fontSize: '1.5rem'}} >Translated Tetum Entry</h2>

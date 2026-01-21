@@ -51,7 +51,8 @@ export default function MainTableSelect({ onRowSelect }: MainTableProps) {
 
   if (true) {
       
-    const [species, setSpecies] = useState<Species[]>([])
+    const [speciesEn, setSpeciesEn] = useState<Species[]>([])
+
     useEffect(() => {
       getSpecies()
     }, [])
@@ -67,12 +68,11 @@ export default function MainTableSelect({ onRowSelect }: MainTableProps) {
         }
 
         const data = await res.json()
-        setSpecies(data.species_en ?? [])
-
+        setSpeciesEn(data.species_en ?? [])
       }
       catch (err) {
         console.error(err)
-        setSpecies([])
+        setSpeciesEn([])
       }
     }
 
@@ -85,7 +85,7 @@ export default function MainTableSelect({ onRowSelect }: MainTableProps) {
       if (selectedIds.length > 0) {
         const selectedId = selectedIds[0]
         console.log("Selected ID:", selectedId)
-        const selectedSpecies = species.find(s => s.species_id === selectedId)
+        const selectedSpecies = speciesEn.find(s => s.species_id === selectedId)
         console.log("Found species:", selectedSpecies)
         onRowSelect(selectedSpecies || null)
       } else {
@@ -101,7 +101,7 @@ export default function MainTableSelect({ onRowSelect }: MainTableProps) {
     return (
       <Paper sx={{ height: 600, width: '100%' }}>
         <DataGrid
-          rows={species}
+          rows={speciesEn}
           columns={columns}
           getRowId={(row) => row.species_id}
           initialState={{ 

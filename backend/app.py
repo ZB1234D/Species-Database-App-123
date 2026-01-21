@@ -513,7 +513,7 @@ def update_species(species_id):
     TET_FIELDS = [
         "scientific_name",
         "common_name",
-        "etymolog",
+        "etymology",
         "habitat",
         "identification_character",
         "leaf_type",
