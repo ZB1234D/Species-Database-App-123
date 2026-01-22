@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TableLayout from "../Components/TableLayout";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function SpeciesPage() {
   const [rows, setRows] = useState([]);
