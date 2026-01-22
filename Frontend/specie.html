@@ -16,22 +16,25 @@
 
         <!-- Online Banner-->
     <link rel="stylesheet" href="css/onlineBanner.css">
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
 
     <style>
       body, html {
         margin: 0;
         padding: 0;
-        height: 100svh;
+        min-height: 100%;
         background: #8dc63f;
-        display: flex;
-        justify-content: center;
         font-family: "Roboto", sans-serif;
       }
 
       .app-shell {
+        min-height: 100vh;
         width: 100%;
         display: flex;
         justify-content: center;
+        align-items: stretch;
         padding: 1rem;
       }
 
@@ -208,6 +211,12 @@
         transform: scale(2); /* adjust zoom level */
         cursor: zoom-out;
       }
+
+      .container {
+        padding: 1rem;
+        flex: 1;
+      }
+
     </style>
   </head>
 
@@ -301,13 +310,19 @@
       const params = new URLSearchParams(window.location.search);
       const plantID = params.get("id");
 
-      let species = [];
+      let species = null;
 
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const syncResult = await syncManager.checkAndSync({
-            forceBundle: true,
-          });
+          //ONLY SYNC WHEN ONLINE 
+          if(navigator.onLine)
+          {
+            syncManager.checkAndSync({forceBundle: false})
+            .catch(err => {
+              console.warn("background sync failure")
+            })
+
+          }
 
           const code = (
             document.querySelector(".lang-btn")?.textContent || "EN"
@@ -317,6 +332,8 @@
           const language = code === "tet" ? "tet" : "en";
 
           species = await dataService.getSpeciesById(plantID, language);
+          //DEBUG
+          console.log("fetched species", species)
 
           if (!species) {
             document.querySelector(".container").innerHTML =
@@ -337,7 +354,7 @@
           document.getElementById("plant-phenology").textContent =
             species.phenology || "";
           document.getElementById("plant-idchars").textContent =
-            species.identification_characters || "";
+            species.identification_character || "";
           document.getElementById("plant-leaf").textContent =
             species.leaf_type || "";
           document.getElementById("plant-fruit").textContent =
@@ -348,9 +365,11 @@
           // get species images from getSpeciesMedia
           const mediaItems = await dataService.getSpeciesMedia(plantID);
 
-          document.getElementById("plant-image").src =
-            mediaItems[0].download_link || "";
-
+          if(mediaItems.length > 0)
+          {
+            document.getElementById("plant-image").src =
+              mediaItems[0].download_link || "";
+          }
           const gallery = document.getElementById("image-gallery");
           gallery.innerHTML = "";
 
