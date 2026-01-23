@@ -62,7 +62,13 @@ function renderNoResults() {
 
 window.setSpeciesData = function setSpeciesData(data) {
   loadedSpeciesData = Array.isArray(data) ? data : [];
-  renderSpecies(loadedSpeciesData);
+  if (typeof window.applyFilters === "function")
+  {
+    window.applyFilters()
+  }
+  else {
+    renderSpecies(loadedSpeciesData)
+  }
 };
 
 window.getLoadedSpeciesData = function () {
@@ -73,7 +79,12 @@ window.getLoadedSpeciesData = function () {
 // Navigation to detail page
 
 function goToDetail(id) {
-  window.location.href = `specie.html?id=${encodeURIComponent(id)}`;
+  const isTet = window.location.pathname.includes("tetum.html")
+
+  const targetP = isTet
+    ? "specie_tetum.html" :
+    "specie.html"
+  window.location.href = `${targetP}?id=${encodeURIComponent(id)}`;
 }
 
 window.goToDetail = goToDetail;
