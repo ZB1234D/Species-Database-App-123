@@ -10,19 +10,19 @@ const API_CONFIG = {
   // Automatically detects development vs production environment
   baseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://127.0.0.1:5000'  // Development (local Flask server)
-    : "https://species-database-app-api.onrender.com",   // Production (update this to your production URL if different)
+    : "https://species-database-app.onrender.com",   // Production (update this to your production URL if different)
   
   // API endpoint paths (relative to baseUrl)
   endpoints: {
     // Sync endpoints
     bundle: '/api/bundle',                    // Full data bundle download
-    changes: '/api/species/changes',          // Check if updates available
+    changes: '/species/changes',          // Check if updates available
     incremental: '/api/species/incremental', // Get changed species only
     
     // Auth endpoints
     login: '/api/auth/login',                 // User login
     userState: '/api/auth/user-state',// Check user status
-    translate: "/api/translate",         
+    translate: "/translate",         
   }
 };
 
