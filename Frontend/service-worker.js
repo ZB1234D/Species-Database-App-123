@@ -207,6 +207,16 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  //need to tell browser not to touch api calls
+  const url = new URL(event.request.url)
+
+  if(url.pathname.startsWith("/api/"))
+  {
+    return
+  }
+
+  //dont itnercept cross-origin requests
+  if (url.origin !== self.location.origin) return
     event.respondWith(
             caches.match(event.request).then(cached =>{
                 if (cached) return cached;
