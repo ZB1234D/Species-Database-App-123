@@ -162,22 +162,27 @@
   const language = code === "tet" ? "tet" : "en";
 
   // Always load from IndexedDB (offline-safe)
-  try {
-    const species = await dataService.getAllSpecies(language);
-    console.log("[Home] Loaded species:", species.length);
-    window.setSpeciesData(species);
-  } catch (err) {
-    console.error("[Home] ERROR loading species from IndexedDB:", err);
-  }
+  const species = await dataService.getAllSpecies(language);
+  console.log("[Home] Loaded species:", species.length);
+  window.setSpeciesData(species);
+
   // Always do sync
-  try {
     syncManager.checkAndSync({ forceBundle: false })
-      .then(res => console.log("[Home] Sync result:", res))
-      .catch(err => console.warn("[Home] Sync failed:", err))
-    console.log("[Home] Sync result:", syncResult);
-  } catch (err) {
-    console.warn("[Home] Sync failed (offline mode). Using cached data:", err);
-  }
+      .then(async res => 
+      {
+        console.log("[Home] Sync result:", res)
+
+        //re-render if new data arrived
+        if(res?.synced)
+        {
+          const updatedSpecies = await dataService.getAllSpecies(language)
+          console.log("[Home] Sync result:", updatedSpecies.length)
+          window.setSpeciesData(updatedSpecies)
+        }
+      })
+      .catch (err => {
+        console.warn("[Home] Sync failed (offline mode). Using cached data:", err);
+      })
 
 });
 
