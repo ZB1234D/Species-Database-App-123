@@ -23,7 +23,6 @@ if(!VIDEO_SRC || !speciesId)
     downloadStatus.textContent ="Video unavailable"
     downloadBtn.disabled = true
     playOverlay?.remove()
-    playOverlay?.remove()
 }
 
 // ------------------------------

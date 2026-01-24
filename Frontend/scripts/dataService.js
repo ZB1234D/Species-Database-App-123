@@ -2,8 +2,17 @@
 if (!window.db) {
   console.error("dataService.js: db.js not loaded!");
 }
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.ready.then(() => {
+      if (!navigator.serviceWorker.controller) {
+        console.warn("SW active but page not  controlled...");
+        window.location.reload();
+      }
+    });
+  }
 
 const dataService = {
+
   // Get all species for a language
   async getAllSpecies(language = "en") {
     await window.db.init();
