@@ -22,6 +22,7 @@ CORS(
     origins=os.getenv("CORS_ORIGINS", "").split(",")
 )
 load_dotenv()
+print("CORS_ORIGINS =", os.getenv("CORS_ORIGINS"))
 
 
 
