@@ -14,7 +14,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import bcrypt
 from auth_authz import register_auth_routes, require_role, get_admin_user
-load_dotenv()
+load_dotenv(override=True)
 print("CORS_ORIGINS =", os.getenv("CORS_ORIGINS"))
 
 
