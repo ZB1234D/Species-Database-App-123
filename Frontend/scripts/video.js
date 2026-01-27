@@ -12,7 +12,7 @@ const STORAGE_KEY = `video_downloaded_species_${speciesId}`
 // ------------------------------
 const videoContainer = document.getElementById("videoContainer");
 const playOverlay = document.getElementById("playOverlay");
-const thumbnail = document.getElementById("videoThumbnail");
+const videoPrev = document.getElementById("videoPreview"); //Video preview thumbnail
 
 const downloadBtn = document.getElementById("downloadBtn");
 const downloadStatus = document.getElementById("downloadStatus");
@@ -24,6 +24,31 @@ if(!VIDEO_SRC || !speciesId)
     downloadBtn.disabled = true
     playOverlay?.remove()
 }
+
+//---------------------------
+// VIDEO PREVIEW THUMBNAIL
+//---------------------------
+//Video preview is working by doing autoplay for 1 seconds and then paused.
+if (videoPrev) {
+        videoPrev.src = VIDEO_SRC;
+        videoPrev.addEventListener("loadeddata", async () => {
+            try {
+                await videoPrev.play();
+
+                setTimeout(() => {
+                    videoPrev.pause();
+                }, 1000);
+
+            } catch (err) {
+                console.warn("Autoplay blocked", err);
+            }
+        });
+}
+
+//---------------------------
+// VIDEO THUMBNAIL USING CANVAS METHOD (NOT WORKING)
+//---------------------------
+//setThumbnail(VIDEO_SRC, thumbnail);
 
 // ------------------------------
 // PLAY VIDEO (THUMBNAIL → VIDEO)
@@ -44,6 +69,51 @@ if (playOverlay) {
         videoContainer.appendChild(video);
     });
 }
+
+// ------------------------------
+// CANVAS THUMBNAIL FOR VIDEO BEFFORE PLAYED (NOT WORKING)
+// ------------------------------
+/*
+//This function sets the Thumbnail with the video frame taken from the video
+//But it is not working because it is blocked by the CORS, It needs access to S3 server to allow the permission
+function setThumbnail(videoUrl, thumbnailElement){
+    if(!videoUrl || !thumbnailElement) return;
+
+    const video = document.createElement("video");
+
+    video.crossOrigin = "anonymous";
+    video.src = videoUrl;
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+
+    video.addEventListener("loadedmetadata", async () => {
+        try{
+            await video.play();
+            video.pause();
+            video.currentTime = 0.1;
+        } catch (err) {
+            console.warn("Autoplay blocked", err)
+        }
+        
+    });
+
+    video.addEventListener("seeked", () =>{
+        const canvas = document.createElement("canvas");
+        canvas.width =  video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const ctxt = canvas.getContext("2d");
+        ctxt.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        thumbnailElement.src = canvas.toDataURL("image/jpeg", 0.85);
+
+        //clean the source after all is set
+        video.src = "";
+    });
+
+}
+*/
 
 // ------------------------------
 // CHECK DOWNLOAD STATE
