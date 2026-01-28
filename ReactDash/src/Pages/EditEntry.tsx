@@ -13,6 +13,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import axios from 'axios'
 import { useParams } from "react-router-dom";
+import { adminFetch } from '../utils/adminFetch'
 
 
 
@@ -136,7 +137,7 @@ export function EditEntry() {
 
     async function fetchTet() {
         try{
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/bundle`)
+            const res = await adminFetch(`${import.meta.env.VITE_API_URL}/bundle`)
             if(!res.ok) throw new Error("Failed to fetch bundle")
             
             const data = await res.json()
@@ -169,19 +170,10 @@ export function EditEntry() {
         setStatus('')
         setError('')
     
-        const token = localStorage.getItem("admin_token")
-        if(!token)
-        {
-            throw new Error("Admin token missing")
-        }
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/species/${ID}`, {
+            const res = await adminFetch(`${import.meta.env.VITE_API_URL}/species/${ID}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: token,
-                }
             })
             
             if(!res.ok)
@@ -334,18 +326,9 @@ export function EditEntry() {
         setUploadError('')
 
         try {
-            const token = localStorage.getItem("admin_token")
-            if(!token)
-            {
-                throw new Error("admin token missing")
-            }
 
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/species/${ID}`, {
+            const res = await adminFetch(`${import.meta.env.VITE_API_URL}/species/${ID}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: token,
-                },
                 body: JSON.stringify({
                     scientific_name: formData.scientificName,
                     common_name: formData.commonName ,
@@ -508,18 +491,14 @@ export function EditEntry() {
             try {
 
                 //load tetum bundle
-                const bundRes = await fetch(`${API_URL}/bundle`)
+                const bundRes = await adminFetch(`${API_URL}/bundle`)
                 if(!bundRes) throw new Error("failed to load bundle")
                 const bundle = await bundRes.json()
                 const tetList = bundle.species_tet ?? []
 
-                const token = localStorage.getItem("admin_token")
-                if(!token) throw new Error("admin token missing")
                 //load english row by id
-                const res =await fetch(`${API_URL}/species/${id}`, {
-                    headers: {
-                        Authorization: token,
-                    },
+                const res =await adminFetch(`${API_URL}/species/${id}`, {
+
                 })
 
                 if(!res.ok){

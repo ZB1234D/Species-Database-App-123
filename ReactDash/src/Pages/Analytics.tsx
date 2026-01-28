@@ -14,6 +14,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import TimerIcon from "@mui/icons-material/Timer";
 import SpaIcon from "@mui/icons-material/Spa";
 import ImageIcon from "@mui/icons-material/Image";
+import { adminFetch } from "../utils/adminFetch";
+
 
 type Overview = {
   total_users: number;
@@ -43,10 +45,10 @@ export default function Analytics() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/analytics/overview`).then((res) =>
+      adminFetch(`${API_URL}/analytics/overview`).then((res) =>
         res.json()
       ),
-      fetch(`${API_URL}/analytics/users`).then((res) => res.json()),
+      adminFetch(`${API_URL}/analytics/users`).then((res) => res.json()),
     ])
       .then(([overviewData, userData]) => {
         setOverview(overviewData);

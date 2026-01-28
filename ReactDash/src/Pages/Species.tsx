@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TableLayout from "../Components/TableLayout";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { adminFetch } from "../utils/adminFetch";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -49,20 +50,10 @@ export default function SpeciesPage() {
       setDeleteLoading(true)
       setStatus('')
       setError('')
-  
-      const token = localStorage.getItem("admin_token")
-      if(!token)
-      {
-          throw new Error("Admin token missing")
-      }
 
       try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/species/${deleteId}`, {
+          const res = await adminFetch(`${import.meta.env.VITE_API_URL}/species/${deleteId}`, {
               method: 'DELETE',
-              headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: token,
-              }
           })
           
           if(!res.ok)
@@ -83,15 +74,10 @@ export default function SpeciesPage() {
       }
   }
   async function fetchSpecies() {
-    const token = localStorage.getItem("admin_token");
     setLoading(true);
     try {
-      const res = await fetch(`${apiUrl}/bundle`, {
+      const res = await adminFetch(`${apiUrl}/bundle`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token || "",
-        },
       });
 
       if (!res.ok) {

@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
+import { adminFetch } from "../utils/adminFetch";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -55,7 +56,7 @@ export default function Users() {
   async function fetchUsers() {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/users`);
+      const res = await adminFetch(`${API_BASE}/users`);
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -141,7 +142,7 @@ export default function Users() {
 
     setLoading(true);
     try {
-      const res = await fetch(url, {
+      const res = await adminFetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -189,7 +190,7 @@ export default function Users() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/users/${numericId}`, {
+      const res = await adminFetch(`${API_BASE}/users/${numericId}`, {
         method: "DELETE",
       });
 

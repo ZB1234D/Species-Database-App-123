@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import React, { useState } from 'react'
 import Alert from '@mui/material/Alert'
 import axios from 'axios'
-
+import { adminFetch } from '../utils/adminFetch'
 
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -213,18 +213,9 @@ export default function Page1() {
         setError('')
 
         try {
-            const token = localStorage.getItem("admin_token")
-            if (!token) {
-                setError("Admin token missing")
-                setLoading(false)
-                return
-            }
-            const response = await fetch(`${API_BASE}/species`, {
+
+            const response = await adminFetch(`${API_BASE}/species`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: token,
-                },
                 body: JSON.stringify({
                     scientific_name: formData.scientificName,
                     common_name: formData.commonName,

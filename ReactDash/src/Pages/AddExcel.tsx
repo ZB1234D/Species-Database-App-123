@@ -6,6 +6,7 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
+import { adminFetch } from "../utils/adminFetch";
 
 interface UploadedFile {
   file: File;
@@ -73,12 +74,9 @@ export default function AddExcel() {
         message: "Processing file...",
       });
 
-      //token needed for upload endpoint
-      const token = localStorage.getItem("admin_token");
 
-      const response = await fetch(`${API_URL}/upload-species`, {
+      const response = await adminFetch(`${API_URL}/upload-species`, {
         method: "POST",
-        headers: { Authorization: token || "" },
         body: formData,
       });
 

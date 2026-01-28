@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { adminFetch } from "../utils/adminFetch";
+
 
 type AuditApiResponse = {
   status: "success" | "error";
@@ -22,7 +24,7 @@ export default function Audit() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch(`${API_URL}/audit-species`, {
+      const res = await adminFetch(`${API_URL}/audit-species`, {
         method: "POST",
         body: formData,
       });
