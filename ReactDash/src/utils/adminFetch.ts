@@ -2,8 +2,6 @@
 ///it attaches admin tokens, detects expired / invalid tokens
 // forces logout on 401
 
-import { localStorageAvailable } from "@mui/x-data-grid/internals"
-
 export async function adminFetch(input:RequestInfo, init: RequestInit = {}) {
     const res = await fetch(input, init)
     const token = localStorage.getItem("admin_token")
