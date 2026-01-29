@@ -9,6 +9,23 @@
  * - scripts/db.js (must be loaded first)
  */
 
+//send image URLs to the sw for background cachjing
+//after bundle sync and incremental updates
+function sendIMGToSW(images = [])
+{
+  if(!navigator.serviceWorker?.controller) return
+
+  const urls = images
+    .map((m)=> m.download_link || m.url)
+    .filter(Boolean)
+  
+  if(!urls.length) return
+  navigator.serviceWorker.controller.postMessage({
+    type: "CACHE_MEDIA",
+    urls
+  })
+}
+
 class SyncManager {
   constructor() {
     // Get API config (assumes config.js is loaded)
@@ -263,6 +280,9 @@ class SyncManager {
       if (bundle.media && Array.isArray(bundle.media) && bundle.media.length > 0) {
         this.reportProgress(`Storing media metadata (${bundle.media.length} items)...`);
         await this.db.storeMediaMetadata(bundle.media);
+
+        //trigerring background media caching
+        sendIMGToSW(bundle.media)
       }
 
       // Step 4: Update sync metadata
@@ -397,6 +417,11 @@ class SyncManager {
       // Step 3: Replace changed species (full row replacement using put())
       this.reportProgress('Updating changed species...');
       await this.replaceChangedSpecies(changes);
+
+      if(changes.media && Array.isArray(changes.media))
+      {
+        sendIMGToSW(changes.media)
+      }
 
       // Step 4: Update sync metadata
       await this.db.updateSyncMetadata({

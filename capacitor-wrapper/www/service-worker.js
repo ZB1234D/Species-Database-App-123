@@ -61,8 +61,8 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  //all images
-  if (event.request.destination === "image") {
+  // Handle Supabase storage URLs (images/videos)
+  if (event.request.destination === "image" || event.request.destination === "video") {
     event.respondWith(handleMediaRequest(event.request));
     return;
   }
@@ -77,7 +77,6 @@ self.addEventListener("fetch", (event) => {
 // Cache-first for media
 async function handleMediaRequest(request) {
   const cache = await caches.open(MEDIA_CACHE);
-
   const cached = await cache.match(request);
   if (cached) {
     console.log("[SW] Media from cache:", request.url);
@@ -87,7 +86,7 @@ async function handleMediaRequest(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      cache.put(request, response.clone());
+      await cache.put(request, response.clone());
     }
     return response;
   } catch (e) {
@@ -151,7 +150,7 @@ self.addEventListener("message", async (event) => {
         if(!cached)
         {
           const res = await fetch(url);
-          if (res.ok) await cache.put(req, res.clone());
+          if (res.ok) await cache.put(url, res.clone());
         }
         done++
         notifyClients({type: "MEDIA_CACHE_PROGRESS", done, total,url})
