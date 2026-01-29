@@ -1,5 +1,4 @@
 import TheDrawer from '../Components/drawer'
-import MainTableSelect from '../mainTableSelect'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import React, { useEffect, useState } from 'react'
@@ -95,7 +94,7 @@ export function EditEntry() {
     //Keeps track of the ID of the row selected (used to fetch Tetum row)
     const [ID, setID] = useState(-1)
 
-    const [resetKey, setResetKey] = useState(0)
+    const [, setResetKey] = useState(0)
     //Keep track of if a translation has been made (used to change text display)
     const [translated, setTranslated] = useState(false)
     //Disables the translate button
@@ -135,22 +134,22 @@ export function EditEntry() {
     const [open, setOpen] = useState(false)
 
 
-    async function fetchTet() {
-        try{
-            const res = await adminFetch(`${import.meta.env.VITE_API_URL}/bundle`)
-            if(!res.ok) throw new Error("Failed to fetch bundle")
+    // async function fetchTet() {
+    //     try{
+    //         const res = await adminFetch(`${import.meta.env.VITE_API_URL}/bundle`)
+    //         if(!res.ok) throw new Error("Failed to fetch bundle")
             
-            const data = await res.json()
+    //         const data = await res.json()
 
-            console.log("Loaded tetum rows:", data.species_tet)
-            setSpeciesTet(data.species_tet ?? [])
-        }
-        catch (err)
-        {
-            console.error("tetum failed to load from bundle", err)
-            setSpeciesTet([])
-        }
-    }
+    //         console.log("Loaded tetum rows:", data.species_tet)
+    //         setSpeciesTet(data.species_tet ?? [])
+    //     }
+    //     catch (err)
+    //     {
+    //         console.error("tetum failed to load from bundle", err)
+    //         setSpeciesTet([])
+    //     }
+    // }
 
     const handleClickOpen = () => {
         setOpen(true)
@@ -502,7 +501,6 @@ export function EditEntry() {
                 })
 
                 if(!res.ok){
-                    const text = await res.text()
                     throw new Error(`failed to load species`)
                 }
 
