@@ -26,15 +26,15 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 translator = Translator()
 
-def translate_to_tetum(text):
+async def translate_to_tetum(text):
     if not text or text.strip() == "":
         return ""
     try:
-        result = translator.translate(text, dest="tet")
+        result = await translator.translate(text, dest="tet")
         translated = result.text
 
         if translated.strip().lower() == text.strip().lower():
-            retry_result = translator.translate(text, dest="tet")
+            retry_result = await translator.translate(text, dest="tet")
             return retry_result.text
 
         return translated
@@ -104,7 +104,7 @@ async def process_file(file_path: str, translate: bool = True):
                 if col == "scientific_name":
                     row_data[col] = row_raw[col]  
                 else:
-                    row_data[col] = translate_to_tetum(row_raw[col])
+                    row_data[col] = await translate_to_tetum(row_raw[col])
                 time.sleep(0.2)
 
         else:
