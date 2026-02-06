@@ -5,6 +5,8 @@ import json
 from googletrans import Translator
 from dotenv import load_dotenv
 import time
+import asyncio
+
 
 load_dotenv()
 
@@ -105,7 +107,8 @@ async def process_file(file_path: str, translate: bool = True):
                     row_data[col] = row_raw[col]  
                 else:
                     row_data[col] = await translate_to_tetum(row_raw[col])
-                time.sleep(0.2)
+                await asyncio.sleep(0.2)
+
 
         else:
             row_data = row_raw
