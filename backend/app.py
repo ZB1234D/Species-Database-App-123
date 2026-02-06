@@ -490,7 +490,7 @@ async def translateMultipleTexts(texts):
     
     results = await asyncio.gather(*tasks)
     
-    return results
+    return tasks
 
 @app.put("/api/species/<int:species_id>")
 def update_species(species_id):
@@ -687,7 +687,7 @@ def translate():
     
     
     print(f"Received text: '{texts}'")
-    array = asyncio.run(translateMultipleTexts(texts))
+    array = translateMultipleTexts(texts)
 
     print(f"Translated Text = '{array}")
     
