@@ -27,7 +27,7 @@ export default function Page1() {
     //Max char length for english text boxes
     const maxEnglishChar = 2000
     //Max char length for Tetum text. (10% has been added just incase the translation comes back with more characters.)
-    const maxTetumChar = maxEnglishChar + (maxEnglishChar * 0.10)
+    //const maxTetumChar = maxEnglishChar + (maxEnglishChar * 0.10)
     //Max char length for names / fruit and leaf types
 
 

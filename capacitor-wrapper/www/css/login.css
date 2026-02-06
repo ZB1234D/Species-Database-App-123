@@ -16,24 +16,26 @@
     }
 
     body {
-      min-height: 100vh;
+      min-height: 100svh;
       background: radial-gradient(circle at top, #0f1a2c, var(--bg-outer));
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
       color: var(--text-main);
-      overflow: hidden;
+      overflow-y: hidden;
     }
 
     .app-shell {
       width: 100vw;
       max-width: 480px;
+      padding-top: clamp(72px, 14vh, 140px);
       padding: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 100px;
     }
 
     .app-container {
@@ -47,7 +49,6 @@
       box-shadow: var(--card-shadow);
       background: var(--bg-inner);
       box-sizing: border-box;
-      justify-content: center;
       overflow: hidden;
       position: relative;
     }
@@ -118,7 +119,7 @@
     }
 
     .footer {
-      margin-top: 20px;
+      margin-top: auto;
       font-size: 14px;
       text-align: center;
       color: var(--text-muted);

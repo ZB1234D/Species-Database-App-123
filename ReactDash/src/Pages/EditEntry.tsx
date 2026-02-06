@@ -22,36 +22,36 @@ const API_URL = import.meta.env.VITE_API_URL
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
-const textFieldBaseSx = {
-    '& .MuiInputBase-input': { color: 'white' },
-    '& .MuiInputLabel-root': { color: 'white' },
-}
+// const textFieldBaseSx = {
+//     '& .MuiInputBase-input': { color: 'white' },
+//     '& .MuiInputLabel-root': { color: 'white' },
+// }
 
-const requiredFieldSx = {
-    ...textFieldBaseSx,
-    '& .MuiFormHelperText-root': { color: 'red' },
-    marginRight: 8,
-    marginTop: 4
-}
+// const requiredFieldSx = {
+//     ...textFieldBaseSx,
+//     '& .MuiFormHelperText-root': { color: 'red' },
+//     marginRight: 8,
+//     marginTop: 4
+// }
 
-const requiredFieldSxNoMargin = {
-    ...textFieldBaseSx,
-    '& .MuiFormHelperText-root': { color: 'red' },
-    marginTop: 4
-}
+// const requiredFieldSxNoMargin = {
+//     ...textFieldBaseSx,
+//     '& .MuiFormHelperText-root': { color: 'red' },
+//     marginTop: 4
+// }
 
-const multilineFieldSx = {
-    ...textFieldBaseSx,
-}
+// const multilineFieldSx = {
+//     ...textFieldBaseSx,
+// }
 
 const formContainerSx = { 
     width: '100%', 
     paddingX: 0 
 }
 
-const fieldRowSx = { 
-    marginTop: 2 
-}
+// const fieldRowSx = { 
+//     marginTop: 2 
+// }
 
 const containerBoxSx = { 
     marginTop: 2, 
@@ -60,14 +60,14 @@ const containerBoxSx = {
     marginX: 'auto' 
 }
 
-const multilineRowSx = { 
-    display: 'flex', 
-    gap: 1, 
-    marginTop: 3, 
-    marginBottom: 3, 
-    maxWidth: '70%', 
-    marginX: 'auto'
-}
+// const multilineRowSx = { 
+//     display: 'flex', 
+//     gap: 1, 
+//     marginTop: 3, 
+//     marginBottom: 3, 
+//     maxWidth: '70%', 
+//     marginX: 'auto'
+// }
 
 const errorContainerSx = { 
     display: 'flex', 
