@@ -107,7 +107,6 @@ async def process_file(file_path: str, translate: bool = True):
                     row_data[col] = row_raw[col]  
                 else:
                     row_data[col] = await translate_to_tetum(row_raw[col])
-                await asyncio.sleep(0.2)
 
 
         else:

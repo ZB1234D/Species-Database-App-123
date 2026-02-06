@@ -279,11 +279,14 @@ def upload_species_file():
             uploaded_file.save(tmp.name)
             temp_path = tmp.name
 
-        en_result = asyncio.run(process_file(temp_path, translate=False))
-        asyncio.create_task(process_file(temp_path, translate=True))
+        en_result = asyncio.run(process_file(temp_path, translate=False))  # English
+        tet_result = asyncio.run(process_file(temp_path, translate=True))   # Tetum
 
-        rows_inserted = en_result["rows_inserted"]
-
+        rows_inserted = min(
+            en_result["rows_inserted"],
+            tet_result["rows_inserted"]
+        )
+        
         log_change(
             "species",
             None,
@@ -292,9 +295,8 @@ def upload_species_file():
 
         return jsonify({
             "status": "success",
-            "message": "English uploaded. Tetum translating in background."
+            "message": "Data uploaded to species_en & species_tet tables"
         }), 200
-
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
