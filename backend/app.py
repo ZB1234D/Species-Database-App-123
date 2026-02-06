@@ -280,12 +280,9 @@ def upload_species_file():
             temp_path = tmp.name
 
         en_result = asyncio.run(process_file(temp_path, translate=False))  # English
-        tet_result = asyncio.run(process_file(temp_path, translate=True))   # Tetum
+        tet_task = asyncio.create_task(process_file(temp_path, translate=True))   # Tetum
 
-        rows_inserted = min(
-            en_result["rows_inserted"],
-            tet_result["rows_inserted"]
-        )
+        rows_inserted = en_result["rows_inserted"],
         
         log_change(
             "species",
